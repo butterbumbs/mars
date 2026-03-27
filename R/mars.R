@@ -7,9 +7,9 @@
 #' @param control mars.control object - choice of Mmax
 #'
 #' @details
-#' A fitted model using `mars`, primarily go through three stages. First when a call is made, it goes through a forward pass stepwise selection of basis functions in `fwd_stepwise()`, which creates splits on basis functions and optimizes these to find the best splits. Second, the results of fwd_stepwise, are passed to a backward stepwise selection of basis functions in `bwd_stepwise()`, which prunes basis functions by removing those that do not improve the model by checking Generalized Cross-Validation (GCV) and when GCV can no longer be reduced, we have our output. The final stage returns the results of the best basis functions, with their variable/predictor, sign and knot of their split. The output returned is augmented by additional parameters from `mars.control().`
+#' A fitted model using `mars`, primarily go through three stages. First, when a call is made, it goes through a forward pass stepwise selection of basis functions in `fwd_stepwise()`, which creates splits on basis functions and optimizes these to find the best splits. Second, the results of fwd_stepwise, are passed to a backward stepwise selection of basis functions in `bwd_stepwise()`, which prunes basis functions by removing those that do not improve the model by checking Generalized Cross-Validation (GCV) and when GCV can no longer be reduced, we have our output. The final stage returns the results of the best basis functions, with their variable/predictor, sign and knot of their split. The output returned is augmented by additional parameters from `mars.control().`
 #'
-#' @returns an object of class `mars`, inheriting from class `lm`. There returns a list of class `lm` plus list of class `mars.
+#' @returns an object of class `mars`, inheriting from class `lm`. Returns a list of class `lm` plus a list of class `mars.
 #'
 #' Some `lm` values:<br>
 #' `coefficients`.. holds coefficients on model<br>
