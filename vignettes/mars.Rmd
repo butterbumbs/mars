@@ -1,0 +1,152 @@
+---
+title: "mars: Multivariate Adaptive Regression Splines"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{mars}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+## Description
+
+This MARS package uses Freidman’s (1991) algorithms to implement Multivariate Adaptive Regression Splines in regression models.The benefit to using MARS is its flexibility on adapting to non-linear regression models by using step wise recursive partitioning on basis functions and the interaction with predictors.
+
+Using step-functions between knots, it splits basis functions and removes those that don't improve the model. Returning the optimal number of basis functions.
+
+## Usage
+
+```{r eval=FALSE}
+
+# default settings
+mars(formula, data, control = mars.control(Mmax=2,d=3,trace=FALSE))
+# Example:
+formula =  y ~. 
+data = data
+control = mars.control(Mmax=2,d=3,trace=FALSE)
+# set trace=TRUE to trace output
+
+# 
+mars(y~. , data, control = mars.control())
+
+```
+
+## Arguments
+
+-   `formula` - object of formula to regress a response such as y and a predictor such as x. Use . for all in data
+-   `data` - input data frame
+-   `control` - mars.control object - choice of Mmax
+
+## Details
+
+A fitted model using mars, primarily go through three stages. First when a call is made, it goes through a forward pass stepwise selection of basis functions in fwd_stepwise(), which creates splits on basis functions and optimizes these to find the best splits. Second, the results of fwd_stepwise, are passed to a backward stepwise selection of basis functions in bwd_stepwise(), which prunes basis functions by removing those that do not improve the model by checking Generalized Cross-Validation (GCV) and when GCV can no longer be reduced, we have our output. The final stage returns the results of the best basis functions, with their variable/predictor, sign and knot of their split. The output returned is augmented by additional parameters from ⁠mars.control().⁠
+
+## Value
+
+an object of class mars, inheriting from class lm. They return a list of class lm plus list of class 'mars.
+
+Some `lm` values:
+
+-   `coefficients`.. holds coefficients on model
+
+-   `rank`.......... rank of basis function
+
+-   `residuals`..... error terms
+
+-   `etc`........... additional `lm` values
+
+Additional to this list in `mars` is:
+
+-   `formula`....... object of formula
+
+-   `call`.......... call of formula matched
+
+-   `y`............. data frame of response
+
+-   `B`............. basis functions
+
+-   `Bfuncs`........ optimize basis functions
+
+-   `x_names`....... names of predictors
+
+## Author
+
+| Zvikomborero Kennedy Jokonya \| email: zkj\@sfu.ca \|
+
+## References
+
+Jerome H. Friedman "Multivariate Adaptive Regression Splines," The Annals of Statistics, Ann. Statist. 19(1), 1-67, (March, 1991)
+
+## See Also
+
+-   `predict.mars()`
+-   `print.mars()`
+-   `summary.mars()`
+-   `plot.mars()`
+-   `mars.control()`
+-   `anova.mars()`
+
+## Examples
+
+```{r}
+library(mars)
+# Example 1:
+
+m <- mars(y~., marstestdata,control = list(Mmax = 2L, d = 3, trace = FALSE))
+summary(m)
+print(m)
+predict(m, newdata = marstestdata)
+anova(m)
+plot(m)
+```
+
+```{r}
+#Example 2: Spotify data, predicting popularity of songs
+#data from: https://www.kaggle.com/datasets/maharshipandya/-spotify-tracks-dataset
+
+fit <- mars(popularity ~. , spotify, control = mars.control(Mmax=4))
+summary(fit)
+anova(fit)
+```
+
+```{r}
+# Example 3: Airbnb prediction on rental price
+## dataset from: https://www.kaggle.com/datasets/dgomonov/new-york-city-airbnb-open-data/
+
+airbnb <- na.omit(airbnb)
+
+fit <- mars(price ~. , airbnb, control = mars.control(Mmax=4))
+summary(fit)
+anova(fit)
+plot(fit)
+
+```
+
+```{r}
+# Example 4: Pima Indians Diabetes (Pima) dataset, predict chance of diabetes for women
+# data from: https://machinelearningmastery.com/standard-machine-learning-datasets-for-imbalanced-classification/
+
+fit <- mars(X0.627 ~. , diabetes, control = mars.control(Mmax=4))
+summary(fit)
+predict(fit, newdata = diabetes)
+anova(fit)
+plot(fit)
+```
+
+```{r}
+# example 5
+set.seed(2026)
+x1 <- 1:100
+x2 <- rnorm(100)
+x3 <- rnorm(100)
+y <- pmax(0, x1 - 0.5)*pmax(0, x2 - 0.5)  + rnorm(100)
+data <- data.frame(y,x1,x2,x3)
+fit <- mars(y ~ ., data = data, control = mars.control(Mmax=4))
+plot(fit)
+```

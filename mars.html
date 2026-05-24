@@ -1,0 +1,142 @@
+<!DOCTYPE html><html><head><title>R: Multivariate Adaptive Regression Splines (MARS)</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.css">
+<script type="text/javascript">
+const macros = { "\\R": "\\textsf{R}", "\\code": "\\texttt"};
+function processMathHTML() {
+    var l = document.getElementsByClassName('reqn');
+    for (let e of l) { katex.render(e.textContent, e, { throwOnError: false, macros }); }
+    return;
+}</script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.js"
+    onload="processMathHTML();"></script>
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body><div class="container"><main>
+
+<table style="width: 100%;"><tr><td>mars</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Multivariate Adaptive Regression Splines (MARS)</h2>
+
+<h3>Description</h3>
+
+<p><code>mars</code> fits a model on data to capture a non-linear relationship. Using step-functions between knots, it splits basis functions and removes those that don't improve the model. Returning the optimal number of basis functions.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre><code class='language-R'>mars(formula, data, control = mars.control())
+</code></pre>
+
+
+<h3>Arguments</h3>
+
+<table>
+<tr><td><code id="formula">formula</code></td>
+<td>
+<p>object of formula to regress a response such as <code>y</code> and a predictor such as <code>x</code>. Use <code>.</code> for all in data</p>
+</td></tr>
+<tr><td><code id="data">data</code></td>
+<td>
+<p>input data frame</p>
+</td></tr>
+<tr><td><code id="control">control</code></td>
+<td>
+<p>mars.control object - choice of Mmax</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>A fitted model using <code>mars</code>, primarily go through three stages. First when a call is made, it goes through a forward pass stepwise selection of basis functions in <code>fwd_stepwise()</code>, which creates splits on basis functions and optimizes these to find the best splits. Second, the results of fwd_stepwise, are passed to a backward stepwise selection of basis functions in <code>bwd_stepwise()</code>, which prunes basis functions by removing those that do not improve the model by checking Generalized Cross-Validation (GCV) and when GCV can no longer be reduced, we have our output. The final stage returns the results of the best basis functions, with their variable/predictor, sign and knot of their split. The output returned is augmented by additional parameters from <code style="white-space: pre;">&#8288;mars.control().&#8288;</code>
+</p>
+
+
+<h3>Value</h3>
+
+<p>an object of class <code>mars</code>, inheriting from class <code>lm</code>. They return a list of class <code>lm</code> plus list of class 'mars.
+</p>
+<p>Some <code>lm</code> values:<br>
+<code>coefficients</code>.. holds coefficients on model<br>
+<code>rank</code>.......... rank of basis function<br>
+<code>residuals</code>..... error terms<br>
+<code>etc</code>........... additional <code>lm</code> values
+</p>
+<p>additional to this list in <code>mars</code> is:<br>
+<code>formula</code>....... object of formula<br>
+<code>call</code>.......... call of formula matched<br>
+<code>y</code>............. data frame of response<br>
+<code>B</code>............. basis functions<br>
+<code>Bfuncs</code>........ optimize basis functions<br>
+<code>x_names</code>....... names of predictors<br>
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Zvikomborero Kennedy Jokonya | email: zkj@sfu.ca |
+</p>
+
+
+<h3>References</h3>
+
+<p>Jerome H. Friedman &quot;Multivariate Adaptive Regression Splines,&quot; The Annals of Statistics, Ann. Statist. 19(1), 1-67, (March, 1991)
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code>print</code>,
+<code>summary</code>,
+<code>predict</code>,
+<code>plot</code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre><code class='language-R'>set.seed(2026)
+
+# Example 1:
+
+m &lt;- mars(y~., marstestdata,control = list(Mmax = 2L, d = 3, trace = FALSE))
+summary(m)
+print(m)
+predict(m, newdata = marstestdata)
+anova(m)
+plot(m)
+
+#Example 2: Spotify data, predicting popularity of songs
+#data from: https://www.kaggle.com/datasets/maharshipandya/-spotify-tracks-dataset
+
+fit &lt;- mars(popularity ~. , spotify, control = mars.control(Mmax=4))
+summary(fit)
+anova(fit)
+
+# Example 3: Airbnb prediction on rental price
+## dataset from: https://www.kaggle.com/datasets/dgomonov/new-york-city-airbnb-open-data/
+
+airbnb &lt;- na.omit(airbnb)
+
+fit &lt;- mars(price ~. , airbnb, control = mars.control(Mmax=4))
+summary(fit)
+anova(fit)
+plot(fit)
+
+# Example 4: Pima Indians Diabetes (Pima) dataset, predict chance of diabetes for women
+# data from: https://machinelearningmastery.com/standard-machine-learning-datasets-for-imbalanced-classification/
+
+fit &lt;- mars(X0.627 ~. , diabetes, control = mars.control(Mmax=4))
+summary(fit)
+predict(fit, newdata = diabetes)
+anova(fit)
+plot(fit)
+
+</code></pre>
+
+</main>
+
+</div>
+</body></html>
