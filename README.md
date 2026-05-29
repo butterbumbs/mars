@@ -28,12 +28,17 @@ functions and the interaction with predictors.
 
 - Base R (May be up to date version)
 
-## Installation
+## Installation and use
 
 You can install mars like so:
 
 ``` r
-From downloaded source files:
+# From github repository:
+devtools::install_github("butterbumbs/mars")
+
+library(mars)
+
+# From downloaded source files:
 source("mars.R")
 source("predict.mars.R")
 source("plot.mars.R")
