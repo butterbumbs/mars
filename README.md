@@ -45,15 +45,14 @@ source("plot.mars.R")
 source("print.mars.R")
 source("summary.mars.R")
 ```
-Zvikomborero Kennedy Jokonya - 
+
 ## Author
 
 Zvikomborero Kennedy Jokonya \| Student ID: 301449517 \| <zkj@sfu.ca> \|
 
 ## License
 
-This project is licensed under the MIT License - see the LICENSE.md file
-for details
+MIT License
 
 ## References
 
